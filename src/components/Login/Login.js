@@ -1,30 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 
 import Card from "../UI/Card/Card";
 import styles from "./Login.module.css";
 import Button from "../UI/Button/Button";
 
 const Login = (props) => {
+
   const [inputEmail, setInputEmail] = useState("");
   const [emailIsValid, setEmailIsValid] = useState();
   const [inputPassword, setInputPassword] = useState("");
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
+  
+  useEffect(() => {
+    
+    const timer = setTimeout(()=>{
+      console.log("Обновляется сосотяние только после 1 сек");
+      setFormIsValid(
+      inputEmail.includes('@') && inputPassword.trim().length > 7
+    )
+  }, 1000)
+
+  return () => {
+    console.log("clean");
+    clearTimeout(timer); //функция отчистки таймера, то есть таймер срабатывает только для последнего символа
+  };
+    
+  }, [inputEmail, inputPassword])
+
   const emailChangeHandler = (event) => {
     setInputEmail(event.target.value);
 
-    setFormIsValid(
-      event.target.value.includes("@") && inputPassword.trim().length > 7
-    );
+  
   };
 
   const passwordChangeHandler = (event) => {
     setInputPassword(event.target.value);
-
-    setFormIsValid(
-      event.target.value.trim().length > 6 && inputEmail.includes("@")
-    );
   };
 
   const validateEmailHandler = () => {
@@ -32,7 +44,7 @@ const Login = (props) => {
   };
 
   const validatePasswordHandler = () => {
-    setPasswordIsValid(inputPassword.trim().length > 6);
+    setPasswordIsValid(inputPassword.trim().length > 7);
   };
 
   const submitHandler = (event) => {
